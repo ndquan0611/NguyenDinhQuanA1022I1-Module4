@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:fragment="bootstrap" rel="stylesheet" th:href="@{/bootstrap-5.3.0-dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>Blog</title>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-center">Display all blog</h2>
+    <a href="/blog/create" class="btn btn-success">Create</a>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">PostTime</th>
+            <th scope="col">Author</th>
+            <th scope="col">Content</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="page, index : ${pages}">
+            <th scope="row" th:text="${index.count}"></th>
+            <td th:text="${page.id}"></td>
+            <td th:text="${page.name}"></td>
+            <td th:text="${page.postTime}"></td>
+            <td th:text="${page.author}"></td>
+            <td th:text="${page.content}"></td>
+            <td>
+                <a th:href="@{/blog/detail(id=${page.id})}" class="btn btn-secondary">Detail</a>
+                <a th:href="@{/blog/edit/{id}(id=${page.id})}" class="btn btn-primary">Edit</a>
+                <a th:href="@{/blog/delete/__${page.id}__}" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" th:if="${pages.isEmpty()}">
+                Danh sách trống
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
