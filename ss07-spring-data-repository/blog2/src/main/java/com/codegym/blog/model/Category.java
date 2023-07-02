@@ -17,7 +17,8 @@ public class Category {
     public Category() {
     }
 
-    public Category(String type, List<Blog> blogs) {
+    public Category(Long id, String type, List<Blog> blogs) {
+        this.id = id;
         this.type = type;
         this.blogs = blogs;
     }
@@ -34,8 +35,8 @@ public class Category {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String name) {
+        this.type = name;
     }
 
     public List<Blog> getBlogs() {

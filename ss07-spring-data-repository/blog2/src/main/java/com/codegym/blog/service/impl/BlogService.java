@@ -21,23 +21,8 @@ public class BlogService implements IBlogService {
     }
 
     @Override
-    public Page<Blog> findAll(Pageable pageable, String title) {
-        return repository.searchBlogByTitle(pageable, title);
-    }
-
-    @Override
-    public Page<Blog> searchTitle(Pageable pageable, String title) {
-        return repository.searchBlogByTitle(pageable, title);
-    }
-
-    @Override
-    public Page<Blog> searchCategory(Pageable pageable, Long id) {
-        return repository.findBlogByCategoryId(pageable, id);
-    }
-
-    @Override
-    public Page<Blog> searchTitleAndCategory(Pageable pageable, String title, Long id) {
-        return repository.findBlogByTitleContainingAndCategoryId(pageable, title, id);
+    public Page<Blog> findAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override
@@ -49,7 +34,8 @@ public class BlogService implements IBlogService {
     public void update(Long id, Blog blog) {
         Blog existedBlog = repository.findById(id).orElse(null);
         if (existedBlog != null) {
-            existedBlog.setTitle(blog.getTitle());
+            // update
+            existedBlog.setName(blog.getName());
             existedBlog.setPostTime(blog.getPostTime());
             existedBlog.setAuthor(blog.getAuthor());
             existedBlog.setCategory(blog.getCategory());
@@ -66,6 +52,6 @@ public class BlogService implements IBlogService {
 
     @Override
     public Blog findById(Long id) {
-        return repository.findById(id).orElse(null);
+        return null;
     }
 }

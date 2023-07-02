@@ -2,22 +2,43 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/bootstrap-5.3.0-dist/css/bootstrap.min.css}">
-    <script th:src="@{/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js}"></script>
+    <link th:fragment="css" rel="stylesheet" th:href="@{/bootstrap-5.3.0-dist/css/bootstrap.min.css}">
+    <script th:fragment="js" th:src="@{/bootstrap-5.3.0-dist/js/bootstrap.bundle.min.js}"></script>
     <title>Display all blog</title>
 </head>
 <body>
 <div class="container">
-    <h2>Danh sách blog</h2>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
-    <table class="table">
+    <h2 class="text-center mt-4">Danh sách blog</h2>
+    <div class="d-flex align-items-center justify-content-between">
+        <a href="/blog/create" class="btn btn-success">Create</a>
+        <!--Tìm kiếm bth-->
+        <!--<form class="d-flex" role="search" action="/blog" method="get">-->
+        <!--    <input class="form-control me-2" type="search" name="searchTitle" placeholder="Search" th:value="${searchTitle}">-->
+        <!--    <button class="btn btn-outline-success" type="submit">Search</button>-->
+        <!--</form>-->
+
+        <!--Tìm kiếm theo kiểu-->
+        <form class="d-flex" role="search" action="/blog" method="get">
+            <input class="form-control me-2" type="search" name="searchTitle" placeholder="Search"
+                   th:value="${searchTitle}">
+            <select name="searchCategory" class="form-select">
+                <option value="0">Chọn kiểu tìm kiếm</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.type}">
+                </option>
+            </select>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    <table class="table mt-4">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">ID</th>
             <th scope="col">Chủ đề</th>
-            <th scope="col" style="min-width: 200px">Thời gian đăng bài</th>
             <th scope="col" style="min-width: 150px">Tác giả</th>
+            <th scope="col" style="min-width: 200px">Thời gian đăng bài</th>
             <th scope="col" style="min-width: 100px">Kiểu</th>
             <th scope="col">Nội dung</th>
             <th scope="col" style="min-width: 250px">Action</th>
@@ -27,65 +48,53 @@
         <tr th:each="blog, index : ${blogs}">
             <th scope="row" th:text="${index.count}"></th>
             <td th:text="${blog.id}"></td>
-            <td th:text="${blog.name}"></td>
-            <td th:text="${blog.postTime}"></td>
+            <td th:text="${blog.title}"></td>
             <td th:text="${blog.author}"></td>
-            <td th:text="${blog.category.type}"></td>
+            <td th:text="${blog.postTime}"></td>
+            <td th:text="${blog.category.getType()}"></td>
             <td th:text="${blog.content}"></td>
             <td>
                 <a th:href="@{/blog/detail(id=${blog.id})}" class="btn btn-secondary">Detail</a>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal"
-                        th:data-bs-id="*{blog.id}"
-                        th:data-bs-name="*{blog.name}"
-                        th:data-bs-author="${blog.author}"
-                        th:data-bs-type="${blog.category.type}"
-                        th:data-bs-content="${blog.content}"
-                >
-                    Edit
-                </button>
+                <a th:href="@{/blog/update/{id}(id=${blog.id})}" class="btn btn-primary">Edit</a>
                 <a th:href="@{/blog/delete/__${blog.id}__}" class="btn btn-danger">Delete</a>
             </td>
         </tr>
         <tr>
-            <td colspan="6" th:if="${blogs.isEmpty()}">
+            <td colspan="9" th:if="${blogs.isEmpty()}">
                 Danh sách trống
             </td>
         </tr>
         </tbody>
     </table>
+    <div th:class="${blogs.isEmpty()} ? d-none">
+        <nav>
+            <ul class="pagination d-flex align-items-center justify-content-center">
+                <li class="page-item">
+                    <a th:href="@{/blog(page=${blogs.number - 1}, searchTitle=${searchTitle}, searchCategory=${searchCategory})}"
+                       th:classappend="${!blogs.hasPrevious()} ? disabled"
+                       class="page-link"
+                    >
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="page : ${pageNumbers}">
+                    <a th:href="@{/blog(page=${page - 1}, searchTitle=${searchTitle}, searchCategory=${searchCategory})}"
+                       th:text="${page}"
+                       th:classappend="${page == blogs.number + 1} ? active"
+                       class="page-link"
+                    ></a>
+                </li>
+                <li class="page-item">
+                    <a th:href="@{/blog(page=${blogs.number + 1}, searchTitle=${searchTitle}, searchCategory=${searchCategory})}"
+                       th:classappend="${!blogs.hasNext()} ? disabled"
+                       class="page-link"
+                    >
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
-<!--Create-->
-<div th:replace="/blog/create::createModal"></div>
-<!--Update-->
-<div th:replace="/blog/update::updateModal"></div>
 </body>
-<script>
-    var updateModal = document.getElementById('updateModal')
-    updateModal.addEventListener('show.bs.modal', function (event) {
-        // Button that triggered the modal
-        var button = event.relatedTarget
-        // Extract info from data-bs-*
-        var id = button.getAttribute("data-bs-id");
-        var name = button.getAttribute("data-bs-name");
-        var author = button.getAttribute("data-bs-author");
-        var type = button.getAttribute("data-bs-type");
-        var content = button.getAttribute("data-bs-content");
-
-        // If necessary, you could initiate an AJAX request here
-        // and then do the updating in a callback.
-        //
-        // Update the modal's content.
-        var modalBodyID = updateModal.querySelector("#id");
-        var modalBodyName = updateModal.querySelector("#name");
-        var modalBodyAuthor = updateModal.querySelector("#author");
-        var modalBodyType = updateModal.querySelector("#type");
-        var modalBodyContent = updateModal.querySelector("#content");
-
-        modalBodyID.value = id;
-        modalBodyName.value = name;
-        modalBodyAuthor.value = author;
-        modalBodyType.value = type;
-        modalBodyContent.value = content;
-    })
-</script>
 </html>

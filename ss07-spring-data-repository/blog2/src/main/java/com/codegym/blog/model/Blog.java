@@ -8,7 +8,7 @@ public class Blog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
+    private String name;
     @Column(columnDefinition = "DATE")
     private String postTime;
     private String author;
@@ -16,21 +16,14 @@ public class Blog {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "categoryID", referencedColumnName = "id")
+    @JoinColumn(referencedColumnName = "id")
     private Category category;
 
     public Blog() {
     }
 
-    public Blog(String title, String postTime, String author, String content) {
-        this.title = title;
-        this.postTime = postTime;
-        this.author = author;
-        this.content = content;
-    }
-
-    public Blog(String title, String postTime, String author, String content, Category category) {
-        this.title = title;
+    public Blog(String name, String postTime, String author, String content, Category category) {
+        this.name = name;
         this.postTime = postTime;
         this.author = author;
         this.content = content;
@@ -45,12 +38,12 @@ public class Blog {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPostTime() {
