@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/assets/bootstrap/css/bootstrap.min.css" />
+        <script src="/assets/js/jquery-3.6.1.min.js"></script>
+        <title>BLog</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="text-center">Danh sách blog</h1>
+            <div class="d-flex">
+                <button
+                    type="button"
+                    class="btn btn-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createModal"
+                >
+                    Create
+                </button>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Chủ đề</th>
+                        <th scope="col" style="min-width: 170px">Tác giả</th>
+                        <th scope="col" style="min-width: 200px">Thời gian đăng bài</th>
+                        <th scope="col" style="min-width: 100px">Kiểu</th>
+                        <th scope="col">Nội dung</th>
+                        <th scope="col" style="min-width: 250px">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="list"></tbody>
+            </table>
+        </div>
+
+        <div>
+            <nav>
+                <ul class="pagination d-flex align-items-center justify-content-center">
+                    <li class="page-item">
+                        <a href="" class="page-link user-select-none">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="page : ${pageNumbers}">
+                        <a href="" class="page-link"></a>
+                    </li>
+                    <li class="page-item">
+                        <a href="" class="page-link user-select-none">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="modal fade" id="createModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Tạo blog</h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="title" class="col-form-label">Chủ đề:</label>
+                                <input type="text" class="form-control" id="title" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="author" class="col-form-label">Tác giả:</label>
+                                <input type="text" class="form-control" id="author" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="postTime" class="col-form-label">
+                                    Thời gian đăng bài:
+                                </label>
+                                <input type="text" class="form-control" id="postTime" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="type" class="col-form-label">Kiểu:</label>
+                                <select class="form-select" id="createCategory"></select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="col-form-label">Nội dung:</label>
+                                <textarea class="form-control" id="content"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button class="btn btn-primary" id="create">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Cập nhật blog</h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="PUT">
+                            <div class="mb-3">
+                                <label for="title" class="col-form-label">Chủ đề:</label>
+                                <input type="text" class="form-control" name="title" id="title" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="author" class="col-form-label">Tác giả:</label>
+                                <input type="text" class="form-control" name="author" id="author" />
+                            </div>
+                            <div class="mb-3">
+                                <label for="postTime" class="col-form-label">
+                                    Thời gian đăng bài:
+                                </label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="postTime"
+                                    id="postTime"
+                                />
+                            </div>
+                            <div class="mb-3">
+                                <label for="type" class="col-form-label">Kiểu:</label>
+                                <select class="form-select" id="updateCategory"></select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content" class="col-form-label">Nội dung:</label>
+                                <textarea
+                                    class="form-control"
+                                    name="content"
+                                    id="content"
+                                ></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button class="btn btn-primary" id="edit">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/ajax.js"></script>
+</html>
